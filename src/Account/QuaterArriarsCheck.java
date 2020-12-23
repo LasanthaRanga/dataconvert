@@ -10,9 +10,10 @@ import java.sql.ResultSet;
 public class QuaterArriarsCheck {
     public static void main(String[] args) {
 
+        startProcess();
     }
 
-    public void startProcess() {
+    public static void startProcess() {
         try {
             ResultSet data = DB.getData("SELECT\n" +
                     "ass_qstart.idass_Qstart,\n" +
@@ -33,7 +34,7 @@ public class QuaterArriarsCheck {
                 ResultSet qq = DB.getData("SELECT\n" +
                         "assessment.idAssessment,\n" +
                         "ass_allocation.ass_allocation,\n" +
-                        "ROUND(ass_allocation.ass_allocation * ass_nature.ass_nature_year_rate /400,2) AS qq\n" +
+                        "ROUND(ass_allocation.ass_allocation * ass_nature.ass_nature_year_rate /400,2) AS qqq \n" +
                         "FROM\n" +
                         "assessment\n" +
                         "INNER JOIN ass_allocation ON ass_allocation.Assessment_idAssessment = assessment.idAssessment\n" +
@@ -43,7 +44,7 @@ public class QuaterArriarsCheck {
                         "assessment.idAssessment = " + id);
 
                 if (qq.last()) {
-                    qval = data.getDouble("qq");
+                    qval = qq.getDouble("qqq");
                 }
 
 
@@ -65,21 +66,29 @@ public class QuaterArriarsCheck {
 
 
                 double q4histry = 0.0;
+                boolean notCompete = true;
 
                 while (dd.last()) {
                     q4histry += dd.getDouble("ass_PayHistry_Q4");
                     int st4 = dd.getInt("ass_PayHistry_DRQ4");
-
-                    if(st4==1){
+                    if (st4 == 1) {
+                        notCompete = false;
                         break;
                     }
+                }
 
-
+                if (notCompete) {
                     if (q4histry > 0) {
-
+                        System.out.println("--- Gewa Etha ");
+                        double v = qval - q4histry;
+                        if (v == haveToPay) {
+                            System.out.println("########### OKKK");
+                        } else {
+                            System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
+                        }
+                    } else {
+                        System.out.println("--- Gewa Netha");
                     }
-
-
                 }
 
 
