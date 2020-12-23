@@ -8,6 +8,11 @@ import java.sql.ResultSet;
  * Created by Ranga Rathnayake on 2020-12-23.
  */
 public class QuaterArriarsCheck {
+
+    public static double round(double d) {
+        return Math.round(d * 100.0) / 100.0;
+    }
+
     public static void main(String[] args) {
 
         startProcess();
@@ -25,11 +30,13 @@ public class QuaterArriarsCheck {
                     "ass_qstart.ass_Qstart_QuaterNumber = 4 AND\n" +
                     "ass_qstart.ass_Qstart_year = 2020\n");
 
-
+            int x = 0;
             while (data.next()) {
+                int idass_qstart = data.getInt("idass_Qstart");
                 int id = data.getInt("Assessment_idAssessment");
                 double haveToPay = data.getDouble("ass_Qstart_HaveToQPay");
                 double qval = 0;
+
 
                 ResultSet qq = DB.getData("SELECT\n" +
                         "assessment.idAssessment,\n" +
@@ -54,50 +61,75 @@ public class QuaterArriarsCheck {
                         "ass_payhistry.ass_PayHistry_Q3,\n" +
                         "ass_payhistry.ass_PayHistry_Q4,\n" +
                         "ass_payhistry.ass_PayHistry_Qcunt,\n" +
-                        "ass_payhistry.ass_PayHistry_DRQ1,\n" +
-                        "ass_payhistry.ass_PayHistry_DRQ2,\n" +
-                        "ass_payhistry.ass_PayHistry_DRQ3,\n" +
-                        "ass_payhistry.ass_PayHistry_DRQ4\n" +
+                        "ass_payhistry.ass_PayHistry_Q1Status,\n" +
+                        "ass_payhistry.ass_PayHistry_Q2Status,\n" +
+                        "ass_payhistry.ass_PayHistry_Q3Status,\n" +
+                        "ass_payhistry.ass_PayHistry_Q4Status\n" +
                         "FROM\n" +
                         "ass_payhistry\n" +
                         "WHERE\n" +
                         "ass_payhistry.Assessment_idAssessment = '" + id + "' AND\n" +
-                        "ass_payhistry.ass_PayHistry_year = 2020");
+                        "ass_payhistry.ass_PayHistry_year = 2020\n" +
+                        "\n");
 
 
                 double q4histry = 0.0;
                 boolean notCompete = true;
 
-                while (dd.last()) {
+
+                while (dd.next()) {
+
                     q4histry += dd.getDouble("ass_PayHistry_Q4");
-                    int st4 = dd.getInt("ass_PayHistry_DRQ4");
+                    int st4 = dd.getInt("ass_PayHistry_Q4Status");
                     if (st4 == 1) {
                         notCompete = false;
-                        break;
                     }
                 }
 
                 if (notCompete) {
                     if (q4histry > 0) {
-                        System.out.println("--- Gewa Etha ");
-                        double v = qval - q4histry;
+                        System.out.println("QV :" + qval + "  - q4histry : " + q4histry + "   -  " + "  Have To Pay  : " + haveToPay);
+                        double v = round(qval - q4histry);
+                        System.out.println("V : " + v);
+
+                        System.out.println(haveToPay - v);
+
                         if (v == haveToPay) {
                             System.out.println("########### OKKK");
                         } else {
                             System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
+                            x++;
+                          //  updateHaveToPay(idass_qstart, v);
                         }
                     } else {
-                        System.out.println("--- Gewa Netha");
+                        // System.out.println("--- Gewa Netha");
                     }
                 }
 
 
             }
-
+            System.out.println(x);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void updateHaveToPay(int qid, double have) {
+
+        try {
+
+            DB.setData("UPDATE  `ass_qstart` \n" +
+                    "SET \n" +
+                    "`ass_Qstart_HaveToQPay` = '" + have + "'\n" +
+                    "WHERE\n" +
+                    "\t`idass_Qstart` = " + qid);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
