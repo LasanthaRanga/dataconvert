@@ -5,9 +5,9 @@ import conn.DB;
 import java.sql.ResultSet;
 
 /**
- * Created by Ranga Rathnayake on 2020-12-23.
+ * Created by Ranga Rathnayake on 2020-12-24.
  */
-public class QuaterArriarsCheck {
+public class QuaterArriars1 {
 
     public static double round(double d) {
         return Math.round(d * 100.0) / 100.0;
@@ -27,7 +27,7 @@ public class QuaterArriarsCheck {
                     "FROM\n" +
                     "ass_qstart\n" +
                     "WHERE\n" +
-                    "ass_qstart.ass_Qstart_QuaterNumber = 4 AND\n" +
+                    "ass_qstart.ass_Qstart_QuaterNumber = 1 AND\n" +
                     "ass_qstart.ass_Qstart_year = 2020\n");
 
             int x = 0;
@@ -73,23 +73,23 @@ public class QuaterArriarsCheck {
                         "\n");
 
 
-                double q4histry = 0.0;
+                double q1histry = 0.0;
                 boolean notCompete = true;
 
 
                 while (dd.next()) {
 
-                    q4histry += dd.getDouble("ass_PayHistry_Q4");
-                    int st4 = dd.getInt("ass_PayHistry_Q4Status");
-                    if (st4 == 1) {
+                    q1histry += dd.getDouble("ass_PayHistry_Q1");
+                    int st1 = dd.getInt("ass_PayHistry_Q1Status");
+                    if (st1 == 1) {
                         notCompete = false;
                     }
                 }
 
                 if (notCompete) {
-                    if (q4histry > 0) {
-                        System.out.println("QV :" + qval + "  - q4histry : " + q4histry + "   -  " + "  Have To Pay  : " + haveToPay);
-                        double v = round(qval - q4histry);
+                    if (q1histry > 0) {
+                        System.out.println("QV :" + qval + "  - q4histry : " + q1histry + "   -  " + "  Have To Pay  : " + haveToPay);
+                        double v = round(qval - q1histry);
                         System.out.println("V : " + v);
 
                         System.out.println(haveToPay - v);
@@ -99,7 +99,7 @@ public class QuaterArriarsCheck {
                         } else {
                             System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
                             x++;
-                           updateHaveToPay(idass_qstart, v);
+                            // updateHaveToPay(idass_qstart, v, id);
                         }
                     } else {
                         // System.out.println("--- Gewa Netha");
@@ -115,7 +115,7 @@ public class QuaterArriarsCheck {
         }
     }
 
-    public static void updateHaveToPay(int qid, double have) {
+    public static void updateHaveToPay(int qid, double have, int idAss) {
 
         try {
 
@@ -125,11 +125,21 @@ public class QuaterArriarsCheck {
                     "WHERE\n" +
                     "\t`idass_Qstart` = " + qid);
 
+
+            DB.setData("UPDATE `ass_qstart` \n" +
+                    "SET `ass_Qstart_LQ_Arreas` = '" + have + "',\n" +
+                    "`ass_Qstart_LQC_Arreas` = '" + have + "',\n" +
+                    "`ass_Qstart_tyold_arrias` = '" + have + "' \n" +
+                    "WHERE\n" +
+                    "\t`ass_Qstart_QuaterNumber` = 4 \n" +
+                    "\tAND `ass_Qstart_process_date` = '2020-10-01' \n" +
+                    "\tAND `Assessment_idAssessment` ='" + idAss + "' \n" +
+                    "\tAND `ass_Qstart_year` = 2020");
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 

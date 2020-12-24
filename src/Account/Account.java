@@ -24,47 +24,62 @@ public class Account {
     public static void getAssessment() {
         try {
             ResultSet data = DB.getData("SELECT\n" +
-                    "assessment.idAssessment,\n" +
-                    "assessment.Customer_idCustomer,\n" +
-                    "assessment.Ward_idWard,\n" +
-                    "assessment.Street_idStreet,\n" +
-                    "assessment.ass_nature_idass_nature,\n" +
-                    "assessment.ass_discription_idass_discription,\n" +
-                    "assessment.User_idUser,\n" +
-                    "assessment.assessment_oder,\n" +
-                    "assessment.assessment_no,\n" +
-                    "assessment.assessment_status,\n" +
-                    "assessment.assessment_syn,\n" +
-                    "assessment.assessment_comment,\n" +
-                    "assessment.assessment_obsolete,\n" +
-                    "assessment.office_idOffice,\n" +
-                    "assessment.isWarrant,\n" +
-                    "ass_nature.ass_nature_year_rate,\n" +
-                    "ward.ward_no,\n" +
-                    "street.street_name\n" +
+                    "\tassessment.idAssessment,\n" +
+                    "\tassessment.Customer_idCustomer,\n" +
+                    "\tassessment.Ward_idWard,\n" +
+                    "\tassessment.Street_idStreet,\n" +
+                    "\tassessment.ass_nature_idass_nature,\n" +
+                    "\tassessment.ass_discription_idass_discription,\n" +
+                    "\tassessment.User_idUser,\n" +
+                    "\tassessment.assessment_oder,\n" +
+                    "\tassessment.assessment_no,\n" +
+                    "\tassessment.assessment_status,\n" +
+                    "\tassessment.assessment_syn,\n" +
+                    "\tassessment.assessment_comment,\n" +
+                    "\tassessment.assessment_obsolete,\n" +
+                    "\tassessment.office_idOffice,\n" +
+                    "\tassessment.isWarrant,\n" +
+                    "\tass_nature.ass_nature_year_rate,\n" +
+                    "\tward.ward_no,\n" +
+                    "\tstreet.street_name \n" +
                     "FROM\n" +
-                    "assessment\n" +
-                    "INNER JOIN ass_nature ON assessment.ass_nature_idass_nature = ass_nature.idass_nature\n" +
-                    "INNER JOIN ward ON assessment.Ward_idWard = ward.idWard\n" +
-                    "INNER JOIN street ON street.Ward_idWard = ward.idWard AND assessment.Street_idStreet = street.idStreet\n" +
+                    "\tassessment\n" +
+                    "\tINNER JOIN ass_nature ON assessment.ass_nature_idass_nature = ass_nature.idass_nature\n" +
+                    "\tINNER JOIN ward ON assessment.Ward_idWard = ward.idWard\n" +
+                    "\tINNER JOIN street ON street.Ward_idWard = ward.idWard \n" +
+                    "\tAND assessment.Street_idStreet = street.idStreet \n" +
                     "WHERE\n" +
-                    "assessment.assessment_syn = 0 AND\n" +
-                    "street.idStreet = 1");
+                    "\tassessment.assessment_syn = 0 \n" +
+                    "");
 
-            double t_lyq = 0;
+            double t_lya = 0;
             double t_lyw = 0;
+            double lastYearTotalArriars = 0;
+
             double t_billing = 0;
             double t_tya_warant = 0;
             double t_debit = 0;
 
             double t_over = 0;
             double t_10_paid = 0;
-            double t_paid = 0;
+            double t_paid1 = 0;
+            double t_paid2 = 0;
             double t_discout = 0;
 
             double t_next = 0;
 
             double haveToPay = 0;
+
+
+            double CreditKalaMudala = 0;
+            double PeraWarshayenLebi10diGeunamudala = 0;
+            double paymentTableEkenha10discountwalin = 0;
+            double ReciptTableEkenha10discountwalin = 0;
+            double discount_dico_discount = 0;
+            double credit_per_wasra_recit_discount = 0;
+            double per_wasra_Payment_Tabele_disco_paid_discount = 0;
+            double payment_table_next_year_10_process_over = 0;
+
 
             while (data.next()) {
 
@@ -162,10 +177,10 @@ public class Account {
                     System.out.println("      CD " + ass_creditDebit_date + "  " + ass_creditDebit_cd + "   " + ass_creditDebit_amount);
                     if (ass_creditDebit_cd > 0) {
                         debit = ass_creditDebit_amount;
-                        System.out.println("-------------------------------------------------------------------------------------------------------------------- DEBIT  "+ debit);
+                        System.out.println("-------------------------------------------------------------------------------------------------------------------- DEBIT  " + debit);
                     } else {
                         credit = ass_creditDebit_amount;
-                        System.out.println("--------------------------------------------------------------------------------------------------------------------------- credit "+credit);
+                        System.out.println("--------------------------------------------------------------------------------------------------------------------------- credit " + credit);
                     }
 
                 }
@@ -206,6 +221,12 @@ public class Account {
                 double nextYarPay = 0;
                 double amout = 0;
 
+                double paymentTableFullTotal = 0;
+                double ass_payment_goto_debit1 = 0;
+                double cd_balance = 0;
+
+                double PaymentFullTotalPaid = 0;
+
 
                 while (asspay.next()) {
 
@@ -213,10 +234,18 @@ public class Account {
                     String ass_payment_date = asspay.getString("ass_Payment_date");
                     double ass_payment_ly_arrears = asspay.getDouble("ass_Payment_LY_Arrears");
                     double ass_payment_ly_warrant = asspay.getDouble("ass_Payment_LY_Warrant");
-                    double cd_balance = asspay.getDouble("cd_balance");
                     double ass_payment_goto_debit = asspay.getDouble("ass_Payment_goto_debit");
                     int receipt_idReceipt = asspay.getInt("Receipt_idReceipt");
 
+                    paymentTableFullTotal = asspay.getDouble("ass_Payment_fullTotal");
+                    ass_payment_goto_debit1 = asspay.getDouble("ass_Payment_goto_debit");
+                    cd_balance = asspay.getDouble("cd_balance");
+
+                    System.out.println("============================   " + paymentTableFullTotal + "  ======" + ass_payment_goto_debit1 + " =========== " + cd_balance);
+
+                    PaymentFullTotalPaid += paymentTableFullTotal + ass_payment_goto_debit1 + cd_balance;
+
+                    System.out.println(PaymentFullTotalPaid);
 
                     nextYarPay += ass_payment_goto_debit;
 
@@ -281,10 +310,10 @@ public class Account {
                             "receipt.cus_id,\n" +
                             "receipt.cross_recipt_or_voucher,\n" +
                             "receipt.pay_type,\n" +
-                            "receipt.amount,\n" +
-                            "receipt.cancle_user,\n" +
-                            "receipt.cancle_dt,\n" +
-                            "receipt.cancle_reson\n" +
+                            "receipt.amount\n" +
+//                            "receipt.cancle_user,\n" +
+//                            "receipt.cancle_dt,\n" +
+//                            "receipt.cancle_reson\n" +
                             "FROM\n" +
                             "receipt\n" +
                             "WHERE\n" +
@@ -335,7 +364,7 @@ public class Account {
 
                     double ass_qstart_haveToQPay = have.getDouble("ass_Qstart_HaveToQPay");
                     ha = ass_qstart_haveToQPay;
-                    haveToPay += ass_qstart_haveToQPay;
+//                    haveToPay += ass_qstart_haveToQPay;
 
                     //   System.out.println("                HAVE to " + ass_qstart_haveToQPay);
 
@@ -381,43 +410,109 @@ public class Account {
                 System.out.println("Debit      : " + debit + "   ");
                 System.out.println("TOTAL      : " + (lya + lyw + v + tyw + debit) + " ");
                 System.out.println(" --have to : " + ha);
+
                 System.out.println("                                        OVER 1231 : " + credit);
                 System.out.println("                                        Paid 10%  : " + (process_update_warant * -1));
                 System.out.println("                                        Paid 10%  : " + process_update_arrears);
-                System.out.println("                                        PAID      : " + (amout + disco.getPaid()));
+                System.out.println("                                        PAID      : " + (amout));
 
                 System.out.println("                                        TDIS TOT  : " + (discount + disco.getDiscount()));
                 System.out.println("                                        total     : " + (credit + (process_update_warant * -1) + amout + discount));
                 System.out.println("                                        ----------------------------------------- ");
                 System.out.println("                                        Next Yar  : " + (nextYarPay + disco.getVer()));
 
-
-                t_lyq += lya;
+                t_lya += lya;
                 t_lyw += lyw;
+                lastYearTotalArriars += lya + lyw;
                 t_billing += v;
                 t_tya_warant += tyw;
                 t_debit += debit;
-
+                haveToPay += ha;
+//
                 t_over += credit;
                 t_10_paid += process_update_warant;
-                t_paid += amout + disco.getPaid();
+
+                t_paid1 += amout;
                 t_discout += discount + disco.getDiscount();
 
                 t_next += nextYarPay + disco.getVer();
 
+//                System.out.println("                                        Credit Kala Mudala : " + credit);
+//                System.out.println("                  Pera Warshayen Lebi 10% di Geuna mudala  : " + (process_update_warant * -1));
+//                System.out.println("             payment Table Eken ha 10% discount walin      : " + (PaymentFullTotalPaid + disco.getPaid()));
+//                System.out.println("              Recipt Table Eken ha 10% discount walin      : " + (amout + disco.getPaid()));
+//                System.out.println("                                   discount+ dico discount : " + (discount + disco.getDiscount()));
+//                System.out.println("                  credit + per wasra + recit + discount    : " + (credit + (process_update_warant * -1) + amout + discount));
+//
+//                System.out.println("        per wasra + Payment Tabele + disco paid + discount : " + ((process_update_warant * -1) + PaymentFullTotalPaid + disco.getPaid() + discount));
+//                System.out.println("                                        ----------------------------------------- ");
+//                System.out.println("               payment table next year + 10% process over  : " + (nextYarPay + disco.getVer()));
+
+//                CreditKalaMudala += credit;
+//                PeraWarshayenLebi10diGeunamudala += (process_update_warant * -1);
+//                paymentTableEkenha10discountwalin += (PaymentFullTotalPaid + disco.getPaid());
+//                ReciptTableEkenha10discountwalin += (amout + disco.getPaid());
+//                discount_dico_discount += (discount + disco.getDiscount());
+//                credit_per_wasra_recit_discount += (credit + (process_update_warant * -1) + amout + discount);
+//                per_wasra_Payment_Tabele_disco_paid_discount += ((process_update_warant * -1) + PaymentFullTotalPaid + disco.getPaid() + discount);
+//                payment_table_next_year_10_process_over += (nextYarPay + disco.getVer());
+
+
             }
 
             DecimalFormat df = new DecimalFormat("#.##");
-            System.out.println("t_lya " + df.format(round(t_lyq)));
-            System.out.println("t_lyq " + df.format(round(t_lyw)));
-            System.out.println("t_billing " + df.format(round(t_billing)));
-            System.out.println("t_ty_warrant " + df.format(round(t_tya_warant)));
-            System.out.println("t_debit " + df.format(round(t_debit)));
-            System.out.println("t_over " + df.format(round(t_over)));
-            System.out.println("t_10_paid " + df.format(round(t_10_paid)));
-            System.out.println("t_paid " + df.format(round(t_paid)));
-            System.out.println("t_discout " + df.format(round(t_discout)));
-            System.out.println("t_next " + df.format(round(t_next)));
+            System.out.println("***********************************************************************************");
+            System.out.println("LYA        : " + df.format(t_lya) + "   ");
+            System.out.println("LYW        : " + df.format(t_lyw) + "  ");
+            System.out.println("Billing    : " + df.format(t_billing) + "   ");
+            System.out.println("TYA Warant : " + df.format(t_tya_warant) + "    ");
+            System.out.println("Debit      : " + df.format(t_debit) + "   ");
+            System.out.println("Have To    : " + df.format(haveToPay) + "   ");
+
+            System.out.println("                                        OVER 1231 : " + df.format(t_over));
+            System.out.println("                                        Paid 10%  : " + df.format(t_10_paid));
+            System.out.println("                                        PAID      : " + df.format(t_paid1));
+
+            System.out.println("                                        TDIS TOT  : " + df.format(t_discout));
+//            System.out.println("                                        total     : " + (credit + (process_update_warant * -1) + amout + discount));
+            System.out.println("                                        ----------------------------------------- ");
+            System.out.println("                                        Next Yar  : " + df.format(t_next));
+
+
+//            System.out.println("t_lya " + df.format(round(t_lyw)));
+//            System.out.println("t_lyq " + df.format(round(t_lyw)));
+//            System.out.println("lastYearTotalArriars " + df.format(round(lastYearTotalArriars)));
+//            System.out.println("");
+//
+//
+//            System.out.println("t_billing " + df.format(round(t_billing)));
+//            System.out.println("t_ty_warrant " + df.format(round(t_tya_warant)));
+//            System.out.println("t_debit " + df.format(round(t_debit)));
+//
+//            System.out.println();
+//
+//            System.out.println("CreditKalaMudala  " + df.format(CreditKalaMudala));
+//            System.out.println("PeraWarshayenLebi10diGeunamudala  " + df.format(PeraWarshayenLebi10diGeunamudala));
+//            System.out.println("paymentTableEkenha10discountwalin  = " + df.format(paymentTableEkenha10discountwalin));
+//            System.out.println("ReciptTableEkenha10discountwalin   = " + df.format(ReciptTableEkenha10discountwalin));
+//            System.out.println("discount_dico_discount  " + df.format(discount_dico_discount));
+//            System.out.println("credit_per_wasra_recit_discount  " + df.format(credit_per_wasra_recit_discount));
+//            System.out.println("per_wasra_Payment_Tabele_disco_paid_discount   " + df.format(per_wasra_Payment_Tabele_disco_paid_discount));
+//            System.out.println("payment_table_next_year_10_process_over  " + df.format(payment_table_next_year_10_process_over));
+
+
+//            System.out.println("Credit Adala netha  ----- " + df.format(round(t_over)));
+//
+//            System.out.println("t_10_paid or Overpayament From Next Year " + df.format(round(t_10_paid)));
+//
+//            System.out.println("t_paid " + df.format(round(t_paid1)));
+//
+//            System.out.println("t_paid2 " + df.format(round(t_paid2)));
+//
+//            System.out.println("t_discout " + df.format(round(t_discout)));
+//
+//            System.out.println("t_next " + df.format(round(t_next)));
+
 
             System.out.println(haveToPay + "  --  " + haveToPay);
 
