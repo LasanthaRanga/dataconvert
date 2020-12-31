@@ -18,6 +18,10 @@ public class QuaterArriarsCheck {
         startProcess();
     }
 
+    public void start() {
+        startProcess();
+    }
+
     public static void startProcess() {
         try {
             ResultSet data = DB.getData("SELECT\n" +
@@ -37,6 +41,7 @@ public class QuaterArriarsCheck {
                 double haveToPay = data.getDouble("ass_Qstart_HaveToQPay");
                 double qval = 0;
 
+                System.out.println(idass_qstart);
 
                 ResultSet qq = DB.getData("SELECT\n" +
                         "assessment.idAssessment,\n" +
@@ -47,7 +52,7 @@ public class QuaterArriarsCheck {
                         "INNER JOIN ass_allocation ON ass_allocation.Assessment_idAssessment = assessment.idAssessment\n" +
                         "INNER JOIN ass_nature ON assessment.ass_nature_idass_nature = ass_nature.idass_nature\n" +
                         "WHERE\n" +
-                        "assessment.assessment_status = 1 AND\n" +
+                        "ass_allocation.ass_allocation_status = 1  AND\n" +
                         "assessment.idAssessment = " + id);
 
                 if (qq.last()) {
@@ -93,16 +98,24 @@ public class QuaterArriarsCheck {
                         System.out.println("V : " + v);
 
                         System.out.println(haveToPay - v);
-
-                        if (v == haveToPay) {
-                            System.out.println("########### OKKK");
+                        if (haveToPay >= 0) {
+                            if (v == haveToPay) {
+                                System.out.println("########### OKKK");
+                            } else {
+                                System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
+                                x++;
+                                updateHaveToPay(idass_qstart, v);
+                            }
                         } else {
-                            System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
-                            x++;
-                           updateHaveToPay(idass_qstart, v);
+
+                            System.out.println("RINA RINA RINA RINA RINA RINA RINA RINA  ");
+                            double v1 = qval + haveToPay;
+                            System.out.println(id + "  haveToPay " + "--" + " rina " + id + " --   " + qval + " -                  " + v1);
+                            updateHaveToPay(idass_qstart, v1);
                         }
+
                     } else {
-                        // System.out.println("--- Gewa Netha");
+
                     }
                 }
 

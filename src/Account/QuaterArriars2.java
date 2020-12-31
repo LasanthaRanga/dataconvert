@@ -47,7 +47,7 @@ public class QuaterArriars2 {
                         "INNER JOIN ass_allocation ON ass_allocation.Assessment_idAssessment = assessment.idAssessment\n" +
                         "INNER JOIN ass_nature ON assessment.ass_nature_idass_nature = ass_nature.idass_nature\n" +
                         "WHERE\n" +
-                        "assessment.assessment_status = 1 AND\n" +
+                        "ass_allocation.ass_allocation_status = 1 AND\n" +
                         "assessment.idAssessment = " + id);
 
                 if (qq.last()) {
@@ -94,13 +94,20 @@ public class QuaterArriars2 {
 
                         System.out.println(haveToPay - v);
 
-                        if (v == haveToPay) {
-                            System.out.println("########### OKKK");
+                        if (haveToPay >= 0) {
+                            if (v == haveToPay) {
+                                System.out.println("########### OKKK");
+                            } else {
+                                System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
+                                x++;
+                                // updateHaveToPay(idass_qstart, v, id);
+                            }
                         } else {
-                            System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
-                            x++;
-                            // updateHaveToPay(idass_qstart, v, id);
+                            double v1 = qval + haveToPay;
+                            System.out.println(id + "  haveToPay " + "--" + "rina" + id + "--" + qval + " -                  " + v1);
+                            //  updateHaveToPay(idass_qstart, v1, id);
                         }
+
                     } else {
                         // System.out.println("--- Gewa Netha");
                     }
@@ -131,8 +138,8 @@ public class QuaterArriars2 {
                     "`ass_Qstart_LQC_Arreas` = '" + have + "',\n" +
                     "`ass_Qstart_tyold_arrias` = '" + have + "' \n" +
                     "WHERE\n" +
-                    "\t`ass_Qstart_QuaterNumber` = 4 \n" +
-                    "\tAND `ass_Qstart_process_date` = '2020-10-01' \n" +
+                    "\t`ass_Qstart_QuaterNumber` = 3 \n" +
+                    "\tAND `ass_Qstart_process_date` = '2020-07-01' \n" +
                     "\tAND `Assessment_idAssessment` ='" + idAss + "' \n" +
                     "\tAND `ass_Qstart_year` = 2020");
 

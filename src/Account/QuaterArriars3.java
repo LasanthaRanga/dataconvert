@@ -35,23 +35,26 @@ public class QuaterArriars3 {
                 int idass_qstart = data.getInt("idass_Qstart");
                 int id = data.getInt("Assessment_idAssessment");
                 double haveToPay = data.getDouble("ass_Qstart_HaveToQPay");
-                double qval = 0;
+                double qvall = 0;
 
+                //     System.out.println(idass_qstart);
 
                 ResultSet qq = DB.getData("SELECT\n" +
-                        "assessment.idAssessment,\n" +
-                        "ass_allocation.ass_allocation,\n" +
-                        "ROUND(ass_allocation.ass_allocation * ass_nature.ass_nature_year_rate /400,2) AS qqq \n" +
+                        "\tassessment.idAssessment,\n" +
+                        "\tass_allocation.ass_allocation,\n" +
+                        "\tROUND( ass_allocation.ass_allocation * ass_nature.ass_nature_year_rate / 400, 2 ) AS qqq,\n" +
+                        "\tass_allocation.ass_allocation_status \n" +
                         "FROM\n" +
-                        "assessment\n" +
-                        "INNER JOIN ass_allocation ON ass_allocation.Assessment_idAssessment = assessment.idAssessment\n" +
-                        "INNER JOIN ass_nature ON assessment.ass_nature_idass_nature = ass_nature.idass_nature\n" +
+                        "\tassessment\n" +
+                        "\tINNER JOIN ass_allocation ON ass_allocation.Assessment_idAssessment = assessment.idAssessment\n" +
+                        "\tINNER JOIN ass_nature ON assessment.ass_nature_idass_nature = ass_nature.idass_nature \n" +
                         "WHERE\n" +
-                        "assessment.assessment_status = 1 AND\n" +
-                        "assessment.idAssessment = " + id);
+                        "\tass_allocation.ass_allocation_status = 1 \n" +
+                        "\tAND assessment.idAssessment = " + id);
 
                 if (qq.last()) {
-                    qval = qq.getDouble("qqq");
+                    qvall = qq.getDouble("qqq");
+
                 }
 
 
@@ -87,20 +90,32 @@ public class QuaterArriars3 {
                 }
 
                 if (notCompete) {
+
                     if (q3histry > 0) {
-                        System.out.println("QV :" + qval + "  - q4histry : " + q3histry + "   -  " + "  Have To Pay  : " + haveToPay);
-                        double v = round(qval - q3histry);
-                        System.out.println("V : " + v);
+                        //   System.out.println("QV :" + qval + "  - q4histry : " + q3histry + "   -  " + "  Have To Pay  : " + haveToPay);
+                        double v = round(qvall - q3histry);
+                        // System.out.println("V : " + v);
 
-                        System.out.println(haveToPay - v);
-
-                        if (v == haveToPay) {
-                            System.out.println("########### OKKK");
+                        if (haveToPay >= 0) {
+                            //   System.out.println(haveToPay - v);
+                            if (v == haveToPay) {
+                                //     System.out.println("########### OKKK");
+                            } else {
+                                System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
+                                x++;
+                                updateHaveToPay(idass_qstart, v, id);
+                            }
                         } else {
-                            System.out.println(" WERADI ------------------------------------------------------------------------------------------  " + id);
-                            x++;
-                            updateHaveToPay(idass_qstart, v, id);
+                            System.out.println(haveToPay + "  " + qvall);
+
+                            double v1 = qvall + haveToPay;
+
+                            System.out.println(id + "  haveToPay " + "--" + "rina" + id + "--" + qvall + " -                  " + v1);
+                            updateHaveToPay(idass_qstart, v1, id);
+
                         }
+
+
                     } else {
                         // System.out.println("--- Gewa Netha");
                     }
