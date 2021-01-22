@@ -15,12 +15,13 @@ public class DB {
 
 //            c = DriverManager.getConnection("jdbc:mysql://124.43.11.162:3307/ibbagamuwaps?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "3ta@kela#una@");
 //            c = DriverManager.getConnection("jdbc:mysql://localhost:3306/polgahawela?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "root");
-//            c = DriverManager.getConnection("jdbc:mysql://124.43.11.162:3307/naththandiyaps?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "3ta@kela#una@");
+//            c = DriverManager.getConnection("jdbc:mysql://124.43.11.162:3307/narammalaps?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "3ta@kela#una@");
             //   c = DriverManager.getConnection("jdbc:mysql://124.43.8.250:3306/ultimate2?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "CHI@#321#");
 //               c = DriverManager.getConnection("jdbc:mysql://124.43.9.57:3306/ultimate2?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "@Mck_#321");
-            //             c = DriverManager.getConnection("jdbc:mysql://124.43.8.210:3306/ultimate2?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "Pan@#321#");
 
-            c = DriverManager.getConnection("jdbc:mysql://124.43.9.57:3306/ultimate2?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "@Mck_#321");
+
+           c = DriverManager.getConnection("jdbc:mysql://localhost:3306/ultimate?zeroDateTimeBehavior=convertToNull&useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=no&amp;autoReconnect=true", "root", "root");
+
 
 //            public static final String DBPATH = "jdbc:mysql://124.43.11.162:3307/wariyapolaps?zeroDateTimeBehavior=convertToNull";
 //            public static final String USER = "root";
